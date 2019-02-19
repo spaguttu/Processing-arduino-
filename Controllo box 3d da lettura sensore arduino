@@ -1,0 +1,46 @@
+import queasycam.*;
+import processing.serial.*;
+Serial porta;
+float inByte;
+Scatola b1= new Scatola(50, 0, 0);
+QueasyCam cam;
+
+void setup() {
+  println(Serial.list());
+  porta=new Serial(this, Serial.list()[0], 9600);
+  porta.bufferUntil('\n');
+  size(800, 600, P3D);
+  cam = new QueasyCam(this);
+}
+
+void draw() {
+  background(0);
+  box(400); 
+  b1.mostra();
+}
+class Scatola {
+  float xpos, ypos, zpos;
+  Scatola(float x, float y, float z) {
+    xpos=x;
+    ypos=y;
+    zpos=z;
+  }
+  void mostra() {
+    translate(inByte, ypos, zpos);
+    fill(255,0,0);
+    box(30);
+    fill(255);
+  }
+}
+
+
+
+void serialEvent(Serial porta) {
+  String inString = porta.readStringUntil('\n');
+  if (inString !=null) {
+    inString=trim(inString);
+    inByte=float(inString);
+    inByte=map  (inByte,0,1023,-180,180);
+    println(inByte);
+  }
+}
